@@ -1,5 +1,7 @@
 #pragma once
 
+#include "esphome/core/defines.h"
+#include "esphome/core/version.h"
 #include "esphome/core/component.h"
 #include "esphome/components/display/display_buffer.h"
 
@@ -9,8 +11,11 @@
 namespace esphome {
 namespace obegraensadpanel {
 
-class Panel : public PollingComponent,
-                public display::DisplayBuffer {
+#if ESPHOME_VERSION_CODE >= VERSION_CODE(2023, 12, 0)
+class Panel : public display::DisplayBuffer {
+#else
+class Panel : public PollingComponent, public display::DisplayBuffer {
+#endif  // VERSION_CODE(2023, 12, 0)
  public:
   int p_latch;
   int p_clock;
@@ -23,7 +28,7 @@ class Panel : public PollingComponent,
   }
 
   float get_setup_priority() const override { return setup_priority::PROCESSOR; }
-                  
+  
   display::DisplayType get_display_type() override { return display::DisplayType::DISPLAY_TYPE_BINARY; }
 
   void data(uint8_t value);

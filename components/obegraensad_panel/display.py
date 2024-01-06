@@ -7,6 +7,7 @@ from esphome.const import (
     CONF_PAGES,
     CONF_CONTRAST,
 )
+from esphome.const import __version__ as ESPHOME_VERSION
 
 DEPENDENCIES = []
 
@@ -38,7 +39,8 @@ CONFIG_SCHEMA = cv.All(
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
 
-    await cg.register_component(var, config)
+    if cv.Version.parse(ESPHOME_VERSION) < cv.Version.parse("2023.12.0"):
+        await cg.register_component(var, config)
     await display.register_display(var, config)
 
     cg.add(var.set_pins(
